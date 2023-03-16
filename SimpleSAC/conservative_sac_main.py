@@ -65,7 +65,6 @@ def main(argv):
     )
 
     set_random_seed(FLAGS.seed)
-
     eval_sampler = TrajSampler(gym.make(FLAGS.env).unwrapped, FLAGS.max_traj_length)
     dataset = get_d4rl_dataset(eval_sampler.env)
     dataset['rewards'] = dataset['rewards'] * FLAGS.reward_scale + FLAGS.reward_bias
@@ -143,3 +142,4 @@ def main(argv):
 
 if __name__ == '__main__':
     absl.app.run(main)
+    # python -m SimpleSAC.conservative_sac_main --env 'halfcheetah-medium-v0' --logging.output_dir './experiment_output'

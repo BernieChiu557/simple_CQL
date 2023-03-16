@@ -158,6 +158,7 @@ def smart_repr(x):
 
 def smart_eval(string):
     string = string.replace(',inf)', ',"inf")')
+    string = string.replace(',-inf)', ',"-inf")')
     return eval(string)
 
 
@@ -189,11 +190,11 @@ def extract_distinct_params(exps_data, excluded_params=('seed', 'log_dir'), l=1)
                 params_as_evalable_strings
             )
         )
+        # print(list(unique_params))
+        unique_params = map(smart_eval, unique_params)
+        
         stringified_pairs = sorted(
-            map(
-                smart_eval,
-                unique_params
-            ),
+            unique_params,
             key=lambda x: (
                 tuple(smart_repr(i) for i in x)
                 # tuple(0. if it is None else it for it in x),
