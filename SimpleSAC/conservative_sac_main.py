@@ -104,6 +104,7 @@ def main(argv):
     sampler_policy = SamplerPolicy(policy, FLAGS.device)
 
     viskit_metrics = {}
+    best_return = 0
     for epoch in range(FLAGS.n_epochs):
         metrics = {'epoch': epoch}
 
@@ -124,6 +125,15 @@ def main(argv):
                 metrics['average_normalizd_return'] = np.mean(
                     [eval_sampler.env.get_normalized_score(np.sum(t['rewards'])) for t in trajs]
                 )
+                if metrics['average_normalizd_return'] > best_return:
+                    metrics['best_average_normalizd_return'] = metrics['average_normalizd_return']
+                    best_return = metrics['average_normalizd_return']
+                    if FLAGS.save_model:
+                        save_data = {'sac': sac, 'variant': variant, 'epoch': epoch}
+                        wandb_logger.save_pickle(save_data, 'best_model.pkl')
+                else:
+                    metrics['best_average_normalizd_return'] = best_return
+                    
                 if FLAGS.save_model:
                     save_data = {'sac': sac, 'variant': variant, 'epoch': epoch}
                     wandb_logger.save_pickle(save_data, 'model.pkl')
